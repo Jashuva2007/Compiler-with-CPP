@@ -86,12 +86,19 @@ int main(int argc, char* argv[]) {
         else filepath = arg;
     }
 
-    if (filepath.empty()) {
-        // Phase 7 will add full REPL here — for now, simple inline test
-        std::string src = "let n = 7;\nprint n * n;";
-        runSource(src, debug);
-    } else {
-        runSource(readFile(filepath), debug);
+    if (!filepath.empty()) {
+        auto result = runSource(readFile(filepath), debug);
+        return result == InterpretResult::OK ? 0 : 1;
+    }
+
+    // REPL
+    std::cout << "CVM++ v0.1  (ctrl-d to exit)\n";
+    std::string line;
+    while (true) {
+        std::cout << "cvm> ";
+        if (!std::getline(std::cin, line)) { std::cout << "\n"; break; }
+        if (line.empty()) continue;
+        runSource(line, debug);
     }
     return 0;
 }
