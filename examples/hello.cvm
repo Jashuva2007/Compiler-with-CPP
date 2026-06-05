@@ -1,0 +1,6 @@
+// hello.cvm — smoke test
+
+let x = 10;
+let y = 3;
+
+print x + y * 2;
