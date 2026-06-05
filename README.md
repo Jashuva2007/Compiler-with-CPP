@@ -1,4 +1,4 @@
-# CVM++
+# Custom Compiler and Virtual Machine
 
 A from-scratch bytecode virtual machine written in C++17. Source text flows through a lexer, recursive-descent parser, single-pass compiler, and stack-based execution engine — with zero external dependencies.
 
