@@ -61,19 +61,13 @@ void Compiler::visit(BoolLiteralExpr& e) { emit(e.value ? Opcode::OP_TRUE : Opco
 void Compiler::visit(InputExpr&)         { emit(Opcode::OP_INPUT); }
 
 void Compiler::visit(VariableExpr& e) {
-    uint8_t idx = m_chunk.addConstant(Value{static_cast<int64_t>(
-        // Encode name index: store as a special negative marker.
-        // Practical trick: add name to constants as a string index;
-        // here we use a separate names vector on the chunk.
-        0)});
-    // We need a string table. Promote chunk to carry one.
-    // Defer to full implementation in compiler.cpp — shown below with string support.
+    uint8_t idx = m_chunk.addName(e.name);
     emit(Opcode::OP_GET_GLOBAL, idx);
 }
 
 void Compiler::visit(AssignExpr& e) {
     compileExpr(*e.value);
-    uint8_t idx = m_chunk.addConstant(Value{int64_t(0)});
+    uint8_t idx = m_chunk.addName(e.name);
     emit(Opcode::OP_SET_GLOBAL, idx);
 }
 
@@ -113,7 +107,7 @@ void Compiler::visit(PrintStmt& s) { compileExpr(*s.expr); emit(Opcode::OP_PRINT
 
 void Compiler::visit(LetStmt& s) {
     compileExpr(*s.initializer);
-    uint8_t idx = m_chunk.addConstant(Value{int64_t(0)});
+    uint8_t idx = m_chunk.addName(s.name);
     emit(Opcode::OP_DEFINE_GLOBAL, idx);
 }
 
